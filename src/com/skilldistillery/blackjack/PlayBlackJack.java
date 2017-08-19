@@ -10,14 +10,11 @@ public class PlayBlackJack {
 		System.out.println('\u2660' + "\t\t" + '\u2666' + "\t\t" + '\u2663' + "\t\t" + '\u2764');
 
 		Deck d1 = new Deck();
-		GameEngine run = new GameEngine();
-
 		createProfile();
 		d1.makeNewDeck();
 		d1.shuffleDeck();
-		System.out.println(d1);
+		GameEngine run = new GameEngine();
 		run.runGame();
-		
 
 	}
 
@@ -41,7 +38,7 @@ public class PlayBlackJack {
 		System.out.println("(2) balling on a budget" + "\t\uD83D\uDCB8");
 		int choice = kb.nextInt();
 		if (choice == 1) {
-			Player p1 = new Player(name, 500);
+			Player p1 = new Player(name, 750);
 			System.out.println("Change in $" + p1.getFunds() + "!");
 			System.out.println("You now have $" + p1.getFunds() + " in chips " + p1.getName() + " :)");
 		} else {
@@ -50,6 +47,5 @@ public class PlayBlackJack {
 			System.out.println("You now have $" + p1.getFunds() + " in chips " + p1.getName() + " :)");
 
 		}
-		kb.close();
 	}
 }

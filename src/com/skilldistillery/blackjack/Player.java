@@ -12,6 +12,10 @@ public class Player {
 		this.funds = funds;
 	}
 
+
+	public Player() {
+	}
+
 	public String getName() {
 		return name;
 	}
