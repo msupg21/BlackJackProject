@@ -68,12 +68,12 @@ public class GameEngine {
 					playerHand.drawFromDeck(d1);
 					System.out.println("You drew : " + playerHand.getCard(playerHand.deckSize() - 1).toString());
 					if (playerHand.cardValue() > 21) {
-						System.out.println(
-								"You have: " + playerHand.cardValue() + "\nYou have busted! You have lost $" + wager);
+						System.out.println("\nYou have busted! You have lost $" + wager);
+						System.out.println();
 						System.out.println("\nDealers hand: " + dealerHand.toString());
 						System.out.println("\nDealer had: " + dealerHand.cardValue());
 						playerWallet -= wager;
-						roundOver = true;
+						roundOver = false;
 						break;
 					}
 				}
@@ -83,60 +83,68 @@ public class GameEngine {
 			}
 
 			// dealers turn ***********************************8
-			if ((dealerHand.cardValue() > playerHand.cardValue()) && roundOver != true) {
+			if ((dealerHand.cardValue() > playerHand.cardValue()) && roundOver == true) {
+				System.out.println("You had: " + playerHand.cardValue());
 				System.out.println("You drew: " + playerHand.toString());
 				System.out.println();
 				System.out.println("Dealers hand: " + dealerHand.toString());
 				System.out.println("Dealer had: " + dealerHand.cardValue());
 				System.out.println("Dealer won, you lost $" + wager);
 				playerWallet -= wager;
-				roundOver = true;
+				roundOver = false;
 			}
 			// Dealers specific hit and stay rules
-			while ((dealerHand.cardValue() < 17) && roundOver != true) {
+			while ((dealerHand.cardValue() < 17) && roundOver == true) {
+				System.out.println();
 				dealerHand.drawFromDeck(d1);
 				System.out.println("Dealer drew: " + dealerHand.getCard(dealerHand.deckSize() - 1) + "\nDealers hand: "
 						+ dealerHand.toString());
 			}
 
-			if ((dealerHand.cardValue() > 21) && roundOver != true) {
+			if ((dealerHand.cardValue() > 21) && roundOver == true) {
+				System.out.println();
 				System.out.println("Dealer lost!!!");
+				System.out.println("You had: " + playerHand.cardValue());
 				System.out.println("\nDealer had: " + dealerHand.cardValue());
-				System.out.println("Dealers hand: " + dealerHand.toString());
+//				System.out.println("Dealers hand: " + dealerHand.toString());
 				System.out.println("You won hand!!! Collect $" + wager);
 				playerWallet += wager;
-				roundOver = true;
+				roundOver = false;
 
 			}
 			// for a dealer push
-			if ((playerHand.cardValue() == dealerHand.cardValue()) && (roundOver != true || roundOver == true)) {
+			if ((playerHand.cardValue() == dealerHand.cardValue()) && (roundOver == true || roundOver == true)) {
+				System.out.println();
 				System.out.println(dealerHand.toString());
 				System.out.println("\nDealer had: " + dealerHand.cardValue());
 				System.out.println("**** PUSH ****");
 				System.out.println("You have been credited back $" + wager);
-				roundOver = true;
+				roundOver = false;
 			}
 
 			// check how player won **********************************
-			if ((playerHand.cardValue() > dealerHand.cardValue()) && roundOver != true) {
+			if ((playerHand.cardValue() > dealerHand.cardValue()) && roundOver == true) {
+				System.out.println();
 				System.out.println("Dealer lost!!!");
+				System.out.println("You had: " + playerHand.cardValue());
 				System.out.println("\nDealer had: " + dealerHand.cardValue());
 				System.out.println("You won hand!!! Collect $" + wager);
 				playerWallet += wager;
-				roundOver = true;
-			} else if (roundOver != true) {
+				roundOver = false;
+			} else if (roundOver == true) {
+				System.out.println("You had: " + playerHand.cardValue());
 				System.out.println("Your hand: " + playerHand.toString());
+				System.out.println();
 				System.out.println("Dealers hand: " + dealerHand.toString());
 				System.out.println("Dealer had: " + dealerHand.cardValue());
 				System.out.println("Dealer won, you lost $" + wager);
 				playerWallet -= wager;
-				roundOver = true;
+				roundOver = false;
 
 			}
 
 			playerHand.replaceCards(d1);
 			dealerHand.replaceCards(d1);
-			System.out.println(playerWallet);
 			gameOver = checkForBroke(playerWallet);
 			if (gameOver != true) {
 				roundOver = true;
