@@ -83,7 +83,7 @@ public class GameEngine {
 
 			// dealers turn ***********************************8
 			if ((dealerHand.cardValue() > playerHand.cardValue()) && roundOver == true) {
-			System.out.println();
+				System.out.println();
 				System.out.println("You had: " + playerHand.cardValue());
 				System.out.println("You drew: " + playerHand.toString());
 				System.out.println();
@@ -112,7 +112,7 @@ public class GameEngine {
 				System.out.println("Dealer lost!!!");
 				System.out.println("You had: " + playerHand.cardValue());
 				System.out.println("\nDealer had: " + dealerHand.cardValue());
-//				System.out.println("Dealers hand: " + dealerHand.toString());
+				// System.out.println("Dealers hand: " + dealerHand.toString());
 				System.out.println("You won hand!!! Collect $" + wager);
 				playerWallet += wager;
 				roundOver = false;
@@ -149,14 +149,14 @@ public class GameEngine {
 				roundOver = false;
 
 			}
+			clearConsole();
 
 			playerHand.replaceCards(d1);
 			dealerHand.replaceCards(d1);
 			gameOver = checkForBroke(playerWallet);
 			if (gameOver != true) {
 				roundOver = true;
-			}
-			else{
+			} else {
 				roundOver = false;
 			}
 		}
@@ -176,7 +176,18 @@ public class GameEngine {
 		return over;
 	}
 
-	public static void clearScreen() {
+	public void clearConsole() {
+		try {
+			final String os = System.getProperty("os.name");
+
+			if (os.contains("Windows")) {
+				Runtime.getRuntime().exec("cls");
+			} else {
+				Runtime.getRuntime().exec("clear");
+			}
+		} catch (final Exception e) {
+			// Handle any exceptions.
+		}
 	}
 
 }
