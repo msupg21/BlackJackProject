@@ -5,6 +5,8 @@ public class Player {
 	private int funds;
 
 	// each player has a name and a bank account
+	public Player() {
+	}
 
 	public Player(String name, int funds) {
 		super();
@@ -13,8 +15,6 @@ public class Player {
 	}
 
 
-	public Player() {
-	}
 
 	public String getName() {
 		return name;

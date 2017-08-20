@@ -3,52 +3,73 @@ package com.skilldistillery.blackjack;
 import java.util.Scanner;
 
 public class GameEngine {
+	private int decision;
 
-	public void runGame() {
+	public void runGame(Player p1) {
 		Scanner kb = new Scanner(System.in);
-		Player p1 = new Player();
-		Deck playingDeck = new Deck();
-		Deck playerDeck = new Deck();
-		Deck dealerDeck = new Deck();
-		int playerWallet;
+
+		Deck d1 = new Deck();
+		d1.makeNewDeck();
+		d1.shuffleDeck();
+
+		Deck playerHand = new Deck();
+		Deck dealerHand = new Deck();
 
 		// gives player their money for the table
-		playerWallet = p1.getFunds();
-
-		while (playerWallet <= 0) {
+		double playerWallet = p1.getFunds();
+		// checks for valid wager
+		while (playerWallet >= 0) {
+			clearScreen();
+			System.out.println();
+			System.out.println("Best of luck " + p1.getName());
+			System.out.println("*****************************");
 			System.out.print("$" + playerWallet + " in chips, place your wager: ");
 			int wager = kb.nextInt();
 			if (wager > playerWallet) {
 				System.out.println("Sorry we don't accepts IOU's here");
-				runGame();
+				break;
 			}
 
 			boolean roundOver = false;
 
 			// deals out hands to player and dealer
-			for (int i = 0; i < 2; i++) {
-				playerDeck.drawFromDeck(playerDeck);
-				for (int j = 1; j < 1; j++) {
-					dealerDeck.drawFromDeck(dealerDeck);
-				}
-			}
+			playerHand.drawFromDeck(d1);
+			playerHand.drawFromDeck(d1);
 
+			dealerHand.drawFromDeck(d1);
+			dealerHand.drawFromDeck(d1);
 			// summary of each turn for both player hand and dealer hand
 			while (true) {
-				System.out.println("Your hand: ");
-				System.out.println(playerDeck.toString());
-				System.out.println("You have: " + playerDeck.cardValue());
-				System.out.println("Deal showing: " + dealerDeck.getCard(0).toString() + "\t\uD83C\uDCA0");
+				System.out.println();
+				System.out.println("You drew: " + playerHand.toString());
+				System.out.println("You have: " + playerHand.cardValue());
+				System.out.println();
 
-				System.out.println("(1) HIT or (2) STAY");
-				int decision = kb.nextInt();
+				System.out.println("Dealer draws: " + dealerHand.getCard(0).toString() + " &  " + "\uD83C\uDCA0");
+				if (playerHand.getCards().size() == 2 && playerHand.cardValue() == 21 && dealerHand.cardValue() != 21) {
+					System.out.println("BLACKJACK!!!");
+					System.out.println("You win hand, collect $" + (wager * 1.5));
+					playerWallet += (wager * 1.5);
+					roundOver = true;
+					break;
+				} else {
+					if (playerHand.cardValue() != 21) {
+						System.out.println("(1) HIT or (2) STAY");
+						decision = kb.nextInt();
+					} else {
+						break;
+					}
+				}
 
 				// on a hit
 				if (decision == 1) {
-					playerDeck.drawFromDeck(playerDeck);
-					System.out.println("You now have: " + playerDeck.getCard(playerDeck.deckSize() - 1).toString());
-					if (playerDeck.cardValue() > 21) {
-						System.out.println(playerDeck.cardValue() + "\tYou have busted! You have lost $" + wager);
+					playerHand.drawFromDeck(d1);
+					System.out.println("You drew : " + playerHand.getCard(playerHand.deckSize() - 1).toString());
+					if (playerHand.cardValue() > 21) {
+						System.out.println(
+								"You have: " + playerHand.cardValue() + "\nYou have busted! You have lost $" + wager);
+						System.out.println("\nDealers hand: " + dealerHand.toString());
+						System.out.println("\nDealer had: " + dealerHand.cardValue());
 						playerWallet -= wager;
 						roundOver = true;
 						break;
@@ -59,51 +80,66 @@ public class GameEngine {
 				}
 			}
 
-			// dealers turn
-			System.out.println("Dealer showing: " + dealerDeck.toString());
-			if ((dealerDeck.cardValue() > playerDeck.cardValue()) && roundOver != true) {
-				System.out.println("You lost to the dealer...");
+			// dealers turn ***********************************8
+			if ((dealerHand.cardValue() > playerHand.cardValue()) && roundOver != true) {
+				System.out.println("You drew: " + playerHand.toString());
+				System.out.println();
+				System.out.println("Dealers hand: " + dealerHand.toString());
+				System.out.println("Dealer had: " + dealerHand.cardValue());
+				System.out.println("Dealer won, you lost $" + wager);
 				playerWallet -= wager;
 				roundOver = true;
 			}
 			// Dealers specific hit and stay rules
-			while ((dealerDeck.cardValue() < 17) && roundOver != true) {
-				dealerDeck.drawFromDeck(playingDeck);
-				System.out.println("Dealer showing: " + dealerDeck.getCard(dealerDeck.deckSize() - 1).toString());
+			while ((dealerHand.cardValue() < 17) && roundOver != true) {
+				dealerHand.drawFromDeck(d1);
+				System.out.println("Dealer drew: " + dealerHand.getCard(dealerHand.deckSize() - 1) + "\nDealers hand: "
+						+ dealerHand.toString());
 			}
 
-			System.out.println("Dealer has: " + dealerDeck.cardValue());
-			if ((dealerDeck.cardValue() > 21) && roundOver != true) {
-				System.out.println("Dealer has busted!!");
-				System.out.println("You win hand, collect $" + wager);
+			if ((dealerHand.cardValue() > 21) && roundOver != true) {
+				System.out.println("Dealer lost!!!");
+				System.out.println("\nDealer had: " + dealerHand.cardValue());
+				System.out.println("Dealers hand: " + dealerHand.toString());
+				System.out.println("You won hand!!! Collect $" + wager);
 				playerWallet += wager;
+				roundOver = true;
 
 			}
 			// for a dealer push
-			if (playerDeck.cardValue() == dealerDeck.cardValue() && roundOver != true) {
-				System.out.println("Push");
+			if ((playerHand.cardValue() == dealerHand.cardValue()) && (roundOver != true || roundOver == true)) {
+				System.out.println(dealerHand.toString());
+				System.out.println("\nDealer had: " + dealerHand.cardValue());
+				System.out.println("**** PUSH ****");
 				System.out.println("You have been credited back $" + wager);
 				roundOver = true;
 			}
 
-			// check how player won
-			if ((playerDeck.cardValue() > dealerDeck.cardValue()) && roundOver != true) {
-				System.out.println("You won hand!!! You have won $" + wager);
+			// check how player won **********************************
+			if ((playerHand.cardValue() > dealerHand.cardValue()) && roundOver != true) {
+				System.out.println("Dealer lost!!!");
+				System.out.println("\nDealer had: " + dealerHand.cardValue());
+				System.out.println("You won hand!!! Collect $" + wager);
 				playerWallet += wager;
 				roundOver = true;
 			} else if (roundOver != true) {
-				System.out.println("Deal won, you lose $" + wager);
+				System.out.println("Your hand: " + playerHand.toString());
+				System.out.println("Dealers hand: " + dealerHand.toString());
+				System.out.println("Dealer had: " + dealerHand.cardValue());
+				System.out.println("Dealer won, you lost $" + wager);
 				playerWallet -= wager;
 				roundOver = true;
 
 			}
 
-			playerDeck.replaceCards(playingDeck);
-			dealerDeck.replaceCards(playingDeck);
+			playerHand.replaceCards(d1);
+			dealerHand.replaceCards(d1);
 
 		}
 
-		System.out.println("You have a gambling problem! You're now broke!");
+	}
+
+	public static void clearScreen() {
 	}
 
 }

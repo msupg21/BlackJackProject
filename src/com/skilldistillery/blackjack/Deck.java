@@ -1,81 +1,83 @@
 package com.skilldistillery.blackjack;
 
 import java.util.ArrayList;
-import java.util.Random;
+import java.util.Collections;
+import java.util.List;
 
 public class Deck {
 
-	private ArrayList<Card> cardDeck;
+	private List<Card> cards;
 
 	public Deck() {
-		cardDeck = new ArrayList<Card>();
+		this.cards = new ArrayList<Card>();
 	}
 
 	// populates Arraylist with 52 card objects
 	public void makeNewDeck() {
 		for (Suit cardSuit : Suit.values()) {
 			for (Rank cardRank : Rank.values()) {
-				cardDeck.add(new Card(cardSuit, cardRank));
+				this.cards.add(new Card(cardSuit, cardRank));
 			}
 		}
 	}
 
 	public void shuffleDeck() {
-		ArrayList<Card> tempDeck = new ArrayList<Card>();
-		Random r1 = new Random();
-		int randomCard = 0;
-		int deckOrig = cardDeck.size();
-		for (int i = 0; i < deckOrig; i++) {
-			randomCard = r1.nextInt((cardDeck.size() - 1 - 0) + 1);
-			tempDeck.add(cardDeck.get(randomCard));
+		Collections.shuffle(cards);
 
-			// removing from the original deck
-			cardDeck.remove(randomCard);
-
-		}
-
-		cardDeck = tempDeck;
 	}
+
 	// add to initial deck
-	public void replaceCards(Deck putBack){
-		int replacedDeck = this.cardDeck.size();
+	public void replaceCards(Deck putBack) {
+		int replacedDeck = this.cards.size();
+		
 		for (int i = 0; i < replacedDeck; i++) {
 			addCard(this.getCard(i));
 		}
-		
-		//empty temp discard deck
+
+		// empty temp discard deck
 		for (int i = 0; i < replacedDeck; i++) {
 			this.removeCard(0);
-			
+
 		}
+		this.cards = new ArrayList<Card>();
+	}
+
+	public List<Card> getCards() {
+		return cards;
+	}
+
+	public void setCards(List<Card> cards) {
+		this.cards = cards;
 	}
 
 	public String toString() {
 		String hand = "";
-		for (Card card : this.cardDeck) {
-			hand = "\n" + card.toString();
+		for (Card card : this.cards) {
+			hand = hand + "\n" + card.toString();
 		}
 		return hand;
 	}
 
 	public void removeCard(int i) {
-		cardDeck.remove(i);
+		this.cards.remove(i);
 	}
 
 	public Card getCard(int i) {
-		return cardDeck.get(i);
+		return this.cards.get(i);
 	}
 
 	public void addCard(Card newCard) {
-		cardDeck.add(newCard);
+		this.cards.add(newCard);
 	}
 
+	// drawing form ArrayList at index and then removing it, will replace it later
 	public void drawFromDeck(Deck drawing) {
-		cardDeck.add(drawing.getCard(0));
+		this.cards.add(drawing.getCard(0));
 		drawing.removeCard(0);
 	}
-	public int deckSize(){
-		return cardDeck.size();
+
+	public int deckSize() {
+		return this.cards.size();
 	}
 
 	// returns the int value of boths cards
@@ -83,7 +85,7 @@ public class Deck {
 		int totalVal = 0;
 		int aceVal = 0;
 
-		for (Card cards : cardDeck) {
+		for (Card cards : this.cards) {
 			switch (cards.getRank()) {
 			case TWO:
 				totalVal += 2;
