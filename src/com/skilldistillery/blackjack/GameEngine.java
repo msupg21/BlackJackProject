@@ -1,6 +1,5 @@
 package com.skilldistillery.blackjack;
 
-import java.io.IOException;
 import java.util.Scanner;
 
 public class GameEngine {
@@ -84,6 +83,7 @@ public class GameEngine {
 
 			// dealers turn ***********************************8
 			if ((dealerHand.cardValue() > playerHand.cardValue()) && roundOver == true) {
+			System.out.println();
 				System.out.println("You had: " + playerHand.cardValue());
 				System.out.println("You drew: " + playerHand.toString());
 				System.out.println();
@@ -97,6 +97,12 @@ public class GameEngine {
 			while ((dealerHand.cardValue() < 17) && roundOver == true) {
 				System.out.println();
 				dealerHand.drawFromDeck(d1);
+				try {
+					Thread.sleep(2000);
+				} catch (InterruptedException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
 				System.out.println("Dealer drew: " + dealerHand.getCard(dealerHand.deckSize() - 1) + "\nDealers hand: "
 						+ dealerHand.toString());
 			}
@@ -132,6 +138,7 @@ public class GameEngine {
 				playerWallet += wager;
 				roundOver = false;
 			} else if (roundOver == true) {
+				System.out.println();
 				System.out.println("You had: " + playerHand.cardValue());
 				System.out.println("Your hand: " + playerHand.toString());
 				System.out.println();
