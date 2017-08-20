@@ -1,5 +1,6 @@
 package com.skilldistillery.blackjack;
 
+import java.io.IOException;
 import java.util.Scanner;
 
 public class GameEngine {
@@ -17,9 +18,12 @@ public class GameEngine {
 
 		// gives player their money for the table
 		double playerWallet = p1.getFunds();
+		boolean roundOver = false;
+		boolean gameOver = checkForBroke(playerWallet);
+		if (gameOver != true)
+			roundOver = true;
 		// checks for valid wager
-		while (playerWallet >= 0) {
-			clearScreen();
+		while (roundOver == true) {
 			System.out.println();
 			System.out.println("Best of luck " + p1.getName());
 			System.out.println("*****************************");
@@ -29,8 +33,6 @@ public class GameEngine {
 				System.out.println("Sorry we don't accepts IOU's here");
 				break;
 			}
-
-			boolean roundOver = false;
 
 			// deals out hands to player and dealer
 			playerHand.drawFromDeck(d1);
@@ -134,9 +136,29 @@ public class GameEngine {
 
 			playerHand.replaceCards(d1);
 			dealerHand.replaceCards(d1);
-
+			System.out.println(playerWallet);
+			gameOver = checkForBroke(playerWallet);
+			if (gameOver != true) {
+				roundOver = true;
+			}
+			else{
+				roundOver = false;
+			}
 		}
 
+	}
+
+	private boolean checkForBroke(double pw) {
+		boolean over = false;
+		if (pw <= 0) {
+			System.out.println("You have a gambling problem! You're now broke!");
+			over = true;
+		}
+		if (pw > 5000) {
+			System.out.println("Ok time to move to the a higher stakes table!");
+			over = true;
+		}
+		return over;
 	}
 
 	public static void clearScreen() {
