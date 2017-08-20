@@ -51,7 +51,7 @@ public class GameEngine {
 					System.out.println("BLACKJACK!!!");
 					System.out.println("You win hand, collect $" + (wager * 1.5));
 					playerWallet += (wager * 1.5);
-					roundOver = true;
+					roundOver = false;
 					break;
 				} else {
 					if (playerHand.cardValue() != 21) {
